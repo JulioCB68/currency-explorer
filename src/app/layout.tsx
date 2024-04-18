@@ -18,10 +18,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={poppins.className}>
         <ThemeProvider>
-          <div className="flex min-h-screen w-full flex-col ">
-            <Header />
-            {children}
-          </div>
+          <Header />
+          {children}
         </ThemeProvider>
       </body>
     </html>
