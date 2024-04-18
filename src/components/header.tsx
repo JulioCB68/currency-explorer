@@ -8,7 +8,7 @@ import { CircleDollarSign, Menu } from 'lucide-react'
 
 export default function Header() {
   return (
-    <header className="bg-background flex h-full items-center justify-between gap-4 border-b p-3 px-4 md:px-6">
+    <header className="flex h-full items-center justify-between gap-4 border-b p-3 px-4 md:px-6">
       <div className="flex w-full">
         <Sheet>
           <SheetTrigger asChild>
@@ -55,19 +55,19 @@ export default function Header() {
         <nav className="hidden flex-col gap-6 whitespace-nowrap text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
             href="#"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Convert
           </Link>
           <Link
             href="#"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground transition-colors hover:text-foreground"
           >
             History
           </Link>
           <Link
             href="#"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Trend Charts
           </Link>

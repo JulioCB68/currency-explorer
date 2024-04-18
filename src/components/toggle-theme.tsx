@@ -1,9 +1,9 @@
 'use client'
 
 import { useTheme } from 'next-themes'
+import { Toggle } from './ui/toggle'
 
 import { Moon, Sun } from 'lucide-react'
-import { Toggle } from './ui/toggle'
 
 export default function ToggleTheme() {
   const { setTheme, themes, theme } = useTheme()

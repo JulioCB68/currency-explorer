@@ -1,9 +1,10 @@
 import { poppins } from '@/config/font'
 import { metaData } from '@/config/meta-data'
 
+import { ThemeProvider } from '@/providers/theme-provider'
+
 import Header from '@/components/header'
 
-import { ThemeProvider } from '@/providers/theme-provider'
 import '@/styles/globals.css'
 
 export const metadata = metaData
@@ -17,7 +18,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={poppins.className}>
         <ThemeProvider>
-          <div className="flex min-h-screen w-full flex-col">
+          <div className="flex min-h-screen w-full flex-col ">
             <Header />
             {children}
           </div>
