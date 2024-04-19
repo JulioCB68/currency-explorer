@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/providers/theme-provider'
 
 import Header from '@/components/header'
 
+import TanstackProvider from '@/providers/tanstack-query'
 import '@/styles/globals.css'
 
 export const metadata = metaData
@@ -17,10 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={poppins.className}>
-        <ThemeProvider>
-          <Header />
-          {children}
-        </ThemeProvider>
+        <TanstackProvider>
+          <ThemeProvider>
+            <Header />
+            {children}
+          </ThemeProvider>
+        </TanstackProvider>
       </body>
     </html>
   )
