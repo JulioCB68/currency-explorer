@@ -6,10 +6,10 @@ import { Toggle } from './ui/toggle'
 import { Moon, Sun } from 'lucide-react'
 
 export default function ToggleTheme() {
-  const { setTheme, themes, theme } = useTheme()
+  const { setTheme, theme } = useTheme()
 
   function handleDarkMode() {
-    setTheme(theme === themes[1] ? themes[0] : themes[1])
+    setTheme(theme === 'dark' ? 'light' : 'dark')
   }
 
   return (
