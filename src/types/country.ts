@@ -1,4 +1,4 @@
-declare interface ICountry {
+export interface ICountry {
   flags: {
     png: string
     svg: string

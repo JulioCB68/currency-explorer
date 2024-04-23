@@ -1,122 +1,137 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
-import {
-  Form as FormContainer,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { getCurrencyValue } from '@/services/currency'
+import { extractCurrencyCode } from '@/utils/extract-currency-code'
+import { formatCurrency } from '@/utils/format-currency'
+import { useQuery } from '@tanstack/react-query'
 import { Input } from '../ui/input'
+import { Select, SelectContent, SelectTrigger, SelectValue } from '../ui/select'
 import CustomSelect from './select'
 
-const FormSchema = z.object({
+const formSchema = z.object({
   from: z.string(),
   to: z.string(),
+  amount: z.string(),
 })
 
+type FormSchema = z.infer<typeof formSchema>
+
 export function Form() {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    control,
+    formState: { isSubmitting },
+  } = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data)
+  const { data: currency, refetch } = useQuery({
+    queryKey: ['convert-currency'],
+    queryFn: () => {
+      const from = extractCurrencyCode(getValues('from'))
+      const to = extractCurrencyCode(getValues('to'))
+      return getCurrencyValue(from, to)
+    },
+    enabled: false,
+  })
+
+  function onSubmit() {
+    refetch()
   }
 
   return (
-    <FormContainer {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-4 md:flex-row">
           <div className="w-full space-y-2 ">
-            <FormField
-              control={form.control}
+            <Controller
               name="from"
-              render={({ field }) => (
-                <FormItem className="text-left">
-                  <FormLabel>From</FormLabel>
+              control={control}
+              render={({ field: { name, value, onChange } }) => {
+                return (
                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    name={name}
+                    value={value}
+                    onValueChange={onChange}
+                    disabled={isSubmitting}
                   >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a currecy" />
-                      </SelectTrigger>
-                    </FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a currecy" />
+                    </SelectTrigger>
                     <SelectContent>
                       <CustomSelect />
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+                )
+              }}
             />
           </div>
 
           <div className="w-full space-y-2 ">
-            <FormField
-              control={form.control}
+            <Controller
               name="to"
-              render={({ field }) => (
-                <FormItem className="text-left">
-                  <FormLabel>To</FormLabel>
+              control={control}
+              render={({ field: { name, value, onChange } }) => {
+                return (
                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    name={name}
+                    value={value}
+                    onValueChange={onChange}
+                    disabled={isSubmitting}
                   >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a currecy" />
-                      </SelectTrigger>
-                    </FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a currecy" />
+                    </SelectTrigger>
                     <SelectContent>
                       <CustomSelect />
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+                )
+              }}
             />
           </div>
         </div>
 
-        <div className="mt-4 space-y-2">
-          <label className="text-sm font-medium" htmlFor="amount">
-            Amount
-          </label>
+        <div className="mt-8 space-y-2">
+          <p className="w-full text-left text-sm font-medium">Amount</p>
           <div className="flex flex-col md:flex-row md:items-center">
             <Input
               id="amount"
               type="text"
               className="flex-1"
               placeholder="Enter amount"
+              {...register('amount')}
             />
-            <Button type="submit" className="mt-4 md:ml-2 md:mt-0">
+            <Button
+              disabled={isSubmitting}
+              type="submit"
+              className="mt-4 md:ml-2 md:mt-0"
+            >
               Convert
             </Button>
           </div>
         </div>
       </form>
 
-      <div className="mt-10 text-center">
+      <div className="mt-10">
         <p className="text-lg font-bold">
-          <span id="converted-amount">100</span>
-          <span id="to-currency-symbol">EUR</span>
+          <span className="mr-2" id="converted-amount">
+            {currency &&
+              formatCurrency(
+                Object.values(currency)[0] * Number(getValues('amount')),
+                Object.keys(currency)[0],
+              )}
+          </span>
+          <span id="to-currency-symbol">{getValues('to')}</span>
         </p>
       </div>
-    </FormContainer>
+    </div>
   )
 }

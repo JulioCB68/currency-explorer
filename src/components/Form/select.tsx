@@ -2,28 +2,28 @@
 
 import Image from 'next/image'
 
-import { getConutries } from '@/services/countries'
+import { getCountries } from '@/services/countries'
 import { useQuery } from '@tanstack/react-query'
+
 import { SelectItem } from '../ui/select'
 
 export default function CustomSelect() {
-  const { data } = useQuery({
+  const { data: countries } = useQuery({
     queryKey: ['countries'],
-    queryFn: getConutries,
+    queryFn: getCountries,
   })
 
-  const dataFilter = data?.filter((item) => 'currencies' in item)
+  const dataFilter = countries?.filter((item) => 'currencies' in item)
 
   return (
     <>
-      {dataFilter?.map((item, index) => (
-        <div key={index}>
+      {dataFilter?.map((item, i) => (
+        <div key={i}>
           <SelectItem
-            key={index}
             value={`${Object.keys(item.currencies)[0]} - ${item.name.common}`}
           >
-            <div className="flex w-full tracking-wider">
-              <div className="mr-3 size-7">
+            <div className="flex w-full items-center tracking-wider">
+              <div className="mr-3 flex size-7 items-center ">
                 <Image
                   width={25}
                   height={25}
